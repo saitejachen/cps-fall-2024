@@ -9,14 +9,19 @@ def lcd_display_loop():
 	last_print_time = monotonic()
 	execution_times = []
 	
+	# Using the stop flag from measure_speed module
 	while not measure_speed.stop:
 		start_time = monotonic()
+
+		# Display the last speed on the LCD
 		lcd.text(str(measure_speed.last_speed), 2)
 
+		# Measure the execution time
 		end_time = monotonic()
 		execution_time = end_time - start_time
 		execution_times.append(execution_time)
 
+		# Print the execution time statistics every minute
 		if end_time - last_print_time >= 60:
 			min_time = min(execution_times)
 			max_time = max(execution_times)

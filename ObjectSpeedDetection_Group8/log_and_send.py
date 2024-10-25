@@ -29,6 +29,7 @@ def log_mqtt_loop():
     last_print_time = time.monotonic()
     execution_times = []
 
+    # Using the stop flag from measure_speed module
     while not measure_speed.stop:
         start_time = time.monotonic()
         
@@ -36,11 +37,17 @@ def log_mqtt_loop():
             while send_queue:
                 timestamp, speed, direction = send_queue.pop(0)
                 pretty_time = datetime.fromtimestamp(timestamp).strftime('%Y-%m-%d %H:%M:%S.%f')
+
+                # Publish the data to the broker
                 info = client.publish(topic, f'{pretty_time},{speed},{direction}')
+
+                # Log the data to a file
                 log_file.write(f'{pretty_time},{speed},{direction}\n')
                 status = info.rc
                 if status != 0:
                     print(f'Error: {info}')
+
+                    # Reconnect to the broker if the connection is lost
                     if status == mqtt.MQTT_ERR_CONN_LOST or status == mqtt.MQTT_ERR_NO_CONN:
                         client.reconnect()
                         print('Reconnected to the broker')
@@ -48,10 +55,12 @@ def log_mqtt_loop():
    
                 print(f'Sent: {pretty_time},{speed},{direction} \t Status: {info.rc}')
         
+        # Measure the execution time
         end_time = time.monotonic()
         execution_time = end_time - start_time
         execution_times.append(execution_time)
 
+        # Print the execution time statistics every minute
         if end_time - last_print_time >= 60:
             min_time = min(execution_times)
             max_time = max(execution_times)
