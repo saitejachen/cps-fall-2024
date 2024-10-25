@@ -8,7 +8,9 @@ import measure_speed
 try:
 	measure_speed.init()
 	log_and_send.init()
-	consecutive = True
+	consecutive = False
+	if len(sys.argv) > 1 and sys.argv[1].lower() == 'true':
+		consecutive = True
 	if consecutive:
 		lcd.text("Last Speed(o/s):", 1)
 	else:
