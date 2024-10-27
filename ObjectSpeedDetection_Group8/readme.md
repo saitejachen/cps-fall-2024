@@ -13,6 +13,13 @@ To run the project, on raspberrypi
     ```
     python3 project_group8.py true
     ```
+## Required libraries
+
+requirements
+```
+rpi_lcd
+paho-mqtt
+```
 
 # File information:
 
